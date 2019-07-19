@@ -48,7 +48,7 @@ func(user *User)CreateJWT(secretKey string)(Token, error) {
 }
 
 // 檢查帳密，未完成：密碼沒檢查
-func (user *User)chkLoginFromJSON(username, password string)(Token, error) {
+func (user *User)CheckLogin(username, password string)(Token, error) {
    if username == "" || password == "" {
       return Token{}, fmt.Errorf("Username or Password is empty.")
    }

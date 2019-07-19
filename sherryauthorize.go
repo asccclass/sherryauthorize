@@ -1,4 +1,4 @@
-package main
+package SherryAuthorize
 
 import(
    "fmt"
@@ -6,10 +6,6 @@ import(
    "os"  // for test only
    "github.com/dgrijalva/jwt-go"
    "github.com/asccclass/dorelogin" // sherrydb.mysql
-)
-
-const (
-   SecretKey = "Welcome to Sinica ITs@2018"
 )
 
 type Token struct {
@@ -24,8 +20,15 @@ type UserCredentials struct {
 type User struct {
    ID		int	`json:"id"`
    Name		string	`json:"name"`
+   SecretKey	string	`json:"secretkey"`
    Credentials	UserCredentials	`json:"credentials"`
    Authorize	*Dorelogin.DoreLogin	`json:"dorelogin"`
+}
+
+func(user *User)SetSecretKey(key string) {
+   if key != "" {
+      user.SecretKey = key
+   }
 }
 
 // 建立JWT
@@ -72,6 +75,7 @@ func InitialAuthorize(database, login, passwd, dbServer, port, dbname string) (*
    }
    return &User {
       Authorize: conn,
+      SecretKey: "Welcome to Sinica ITs@2018",
    }, nil
 }
 

@@ -3,7 +3,6 @@ package SherryAuthorize
 import(
    "fmt"
    "time"
-   "os"  // for test only
    "github.com/dgrijalva/jwt-go"
    "github.com/asccclass/dorelogin" // sherrydb.mysql
 )
@@ -60,7 +59,7 @@ func (user *User)chkLoginFromJSON(username, password string)(Token, error) {
    }
    user.Credentials = UserCredentials{ Username: username, Password: password}
    // 產生JWT
-   response, err := user.CreateJWT(SecretKey)
+   response, err := user.CreateJWT(user.SecretKey)
    if err != nil {
        return Token{}, fmt.Errorf("Error while signing the token.%v", err)
    }

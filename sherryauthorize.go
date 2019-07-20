@@ -17,13 +17,14 @@ type UserCredentials struct {
 }
 
 type User struct {
-   ID		int	`json:"id"`
-   Name		string	`json:"name"`
-   SecretKey	string	`json:"secretkey"`
-   Credentials	UserCredentials	`json:"credentials"`
-   Authorize	*Dorelogin.DoreLogin	`json:"dorelogin"`
+   ID			int	`json:"id"`
+   Name			string	`json:"name"`
+   SecretKey		string	`json:"secretkey"`
+   Credentials		UserCredentials	`json:"credentials"`
+   DoreAuthorize	*Dorelogin.DoreLogin	`json:"dorelogin"`
 }
 
+// 設定Secret Key
 func(user *User)SetSecretKey(key string) {
    if key != "" {
       user.SecretKey = key
@@ -54,7 +55,7 @@ func (user *User)CheckLogin(username, password string)(Token, error) {
    }
     // ip := IPAddress.GetIPAdress(r)  // 檢查web進來的IP，先不做
    // 檢查帳號密碼
-   if err := user.Authorize.Chklogin(username, password, ""); err != nil {
+   if err := user.DoreAuthorize.Chklogin(username, password, ""); err != nil {
       return Token{}, err
    }
    user.Credentials = UserCredentials{ Username: username, Password: password}
@@ -66,32 +67,37 @@ func (user *User)CheckLogin(username, password string)(Token, error) {
    return response, nil
 }
 
-// Initial
-func InitialAuthorize(database, login, passwd, dbServer, port, dbname string) (*User, error) {
+// Initial Dorelogn
+func(user *User) InitialDoreLogin(database, login, passwd, dbServer, port, dbname string) (*Dorelogin.Dorelogin, error) {
    conn, err := Dorelogin.NewDorelogin(database, login, passwd, dbServer, port, dbname)
    if err != nil {
       return nil, err
    }
-   return &User {
+   return conn, nil
+}
+
+func NewAuthorize(database, login, passwd, dbServer, port, dbname, type string)(*User, error) {
+   if type == "" {
+      return nil, fmt.Errorf("Must set authorize's type(DORE/FISA/OAUTH).")
+   }
+   if type != "DORE" && type != "FISA" && type != "OAUTH" {
+      return nil , fmt.Errorf("Type error.")
+   }
+   Authorize :=  &User {
       Authorize: conn,
       SecretKey: "Welcome to Sinica ITs@2018",
-   }, nil
-}
-
-/*
-func main() {
-   test, err := InitialAuthorize(os.Getenv("DBMS"), os.Getenv("DBLOGIN"), os.Getenv("DBPASSWORD"), os.Getenv("DBSERVER"), os.Getenv("DBPORT"),os.Getenv("DBNAME"))
-
-   if err != nil {
-      fmt.Printf("Initial Error: %v", err)
-      return
    }
-
-   token, err := test.chkLoginFromJSON("eplusplatform", "aaaa")
-   if err != nil {
-      fmt.Printf("%v", err)
-      return
+   switch type {
+      case "DORE":
+         Authorize.Type = "DORE"
+         Authorize.DoreAuthorize, err := Authirize.InitialDoreLogin(database, login, passwd, dbServer, port, dbname) 
+         if err != nil {
+            return nil, fmt.Errorf("Initial dore authorize failure(%v).", err)
+         }
+      case "FISA":
+      case "OAUTH"
+      default:
+         return nil , fmt.Errorf("Type error.")
    }
-   fmt.Printf("%v\n", token)
+   return Authorize, nil
 }
-*/

@@ -21,6 +21,7 @@ type User struct {
    Name			string	`json:"name"`
    SecretKey		string	`json:"secretkey"`
    Credentials		UserCredentials	`json:"credentials"`
+   Type			string	`json:"typez"`
    DoreAuthorize	*Dorelogin.DoreLogin	`json:"dorelogin"`
 }
 
@@ -68,7 +69,7 @@ func (user *User)CheckLogin(username, password string)(Token, error) {
 }
 
 // Initial Dorelogn
-func(user *User) InitialDoreLogin(database, login, passwd, dbServer, port, dbname string) (*Dorelogin.Dorelogin, error) {
+func(user *User) InitialDoreLogin(database, login, passwd, dbServer, port, dbname string) (*Dorelogin.DoreLogin, error) {
    conn, err := Dorelogin.NewDorelogin(database, login, passwd, dbServer, port, dbname)
    if err != nil {
       return nil, err
@@ -76,26 +77,27 @@ func(user *User) InitialDoreLogin(database, login, passwd, dbServer, port, dbnam
    return conn, nil
 }
 
-func NewAuthorize(database, login, passwd, dbServer, port, dbname, type string)(*User, error) {
-   if type == "" {
+func NewAuthorize(database, login, passwd, dbServer, port, dbname, typez string)(*User, error) {
+   if typez == "" {
       return nil, fmt.Errorf("Must set authorize's type(DORE/FISA/OAUTH).")
    }
-   if type != "DORE" && type != "FISA" && type != "OAUTH" {
+   if typez != "DORE" && typez != "FISA" && typez != "OAUTH" {
       return nil , fmt.Errorf("Type error.")
    }
+
    Authorize :=  &User {
-      Authorize: conn,
       SecretKey: "Welcome to Sinica ITs@2018",
    }
-   switch type {
+   switch typez {
       case "DORE":
          Authorize.Type = "DORE"
-         Authorize.DoreAuthorize, err := Authirize.InitialDoreLogin(database, login, passwd, dbServer, port, dbname) 
+         ADA, err := Authorize.InitialDoreLogin(database, login, passwd, dbServer, port, dbname) 
          if err != nil {
             return nil, fmt.Errorf("Initial dore authorize failure(%v).", err)
          }
+         Authorize.DoreAuthorize = ADA
       case "FISA":
-      case "OAUTH"
+      case "OAUTH":
       default:
          return nil , fmt.Errorf("Type error.")
    }

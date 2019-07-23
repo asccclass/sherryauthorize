@@ -6,6 +6,7 @@ go get github.com/asccclass/sherryauthorize
 ```
 
 ### Usage
+* for dore login check
 ```
 import(
    "os"
@@ -14,7 +15,8 @@ import(
 )
 
 func main() {
-   test, err := InitialAuthorize(os.Getenv("DBMS"), os.Getenv("DBLOGIN"), os.Getenv("DBPASSWORD"), os.Getenv("DBSERVER"), os.Getenv("DBPORT"),os.Getenv("DBNAME"))
+   // Use dorelogin
+   test, err := InitialAuthorize(os.Getenv("DBMS"), os.Getenv("DBLOGIN"), os.Getenv("DBPASSWORD"), os.Getenv("DBSERVER"), os.Getenv("DBPORT"),os.Getenv("DBNAME"), "DORE")
 
    if err != nil {
       fmt.Printf("Initial Error: %v", err)

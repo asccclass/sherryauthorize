@@ -75,31 +75,20 @@ func(user *User) InitialDoreLogin(database, login, passwd, dbServer, port, dbnam
       return nil, err
    }
    return conn, nil
+   ADA, err := Authorize.InitialDoreLogin(database, login, passwd, dbServer, port, dbname) 
+   if err != nil {
+      return nil, fmt.Errorf("Initial dore authorize failure(%v).", err)
+   }
+   Authorize.DoreAuthorize = ADA
+   return Authorize, nil
 }
 
-func NewAuthorize(database, login, passwd, dbServer, port, dbname, typez string)(*User, error) {
-   if typez == "" {
+func NewAuthorize(typez string)(*User, error) {
+   if typez == "" || (typez != "dorelogin" && typez != "fisa" && typez != "oauth" && typez != "ldap" && typez != "eduroam") {
       return nil, fmt.Errorf("Must set authorize's type(DORE/FISA/OAUTH).")
-   }
-   if typez != "DORE" && typez != "FISA" && typez != "OAUTH" {
-      return nil , fmt.Errorf("Type error.")
    }
 
    Authorize :=  &User {
       SecretKey: "Welcome to Sinica ITs@2018",
    }
-   switch typez {
-      case "DORE":
-         Authorize.Type = "DORE"
-         ADA, err := Authorize.InitialDoreLogin(database, login, passwd, dbServer, port, dbname) 
-         if err != nil {
-            return nil, fmt.Errorf("Initial dore authorize failure(%v).", err)
-         }
-         Authorize.DoreAuthorize = ADA
-      case "FISA":
-      case "OAUTH":
-      default:
-         return nil , fmt.Errorf("Type error.")
-   }
-   return Authorize, nil
 }

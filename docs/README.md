@@ -1,5 +1,8 @@
 ## Sherry Authorize tool
 
+### 設計要點
+* AP Secret Key 要每個都不一樣，可以從client_id 下手
+
 ### Installation
 ```
 go get github.com/asccclass/sherryauthorize
